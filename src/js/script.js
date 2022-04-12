@@ -26,7 +26,10 @@
         price: dataSource.books[book].price,
         rating: dataSource.books[book].rating,
         image: dataSource.books[book].image,
-        id: dataSource.books[book].id
+        id: dataSource.books[book].id,
+        ratingWidth: dataSource.books[book].rating * 10,
+        ratingBgc: barColor
+
       };
 
       const generatedHTML = templates.templateBook(HTMLData);
@@ -34,8 +37,20 @@
       const bookContainer = document.querySelector(select.containerOf.booksList);
       bookContainer.appendChild(book);
 
+      function barColor() {
+        if (dataSource.books[book].rating < 6) {
+          return 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)'
+        } else if (dataSource.books[book].rating > 6 && dataSource.books[book].rating <=8) {
+            return 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)'
+        } else if (dataSource.books[book].rating > 8 && dataSource.books[book].rating <= 9) {
+          return 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)'
+        } else if (dataSource.books[book].rating > 9) {
+          return 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)'
+        }
+      }
     }
   }
+
   render();
 
   function initActions() {
@@ -75,7 +90,7 @@
   function hiddenBooks() {
     for (let book of dataSource.books) {
       if (book.details.adults == true && filters.includes('adults')) {
-        if (document.querySelector('.book__image').getAttribute('data-id') == book.id) {
+        if (document.querySelector(select.containerOf.bookImg).getAttribute('data-id') == book.id) {
           document.querySelector(`[data-id="${book.id}"]`).classList.add('hidden');
         }
 
