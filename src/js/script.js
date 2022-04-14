@@ -1,35 +1,45 @@
-{
-  'use strict';
 
-  const select = {
-    templateOf: {
-      templateBook: '#template-book',
-    },
-    containerOf: {
-      booksList: '.books-list',
-      bookImg: '.book__image',
-      filters: '.filters'
-    }
-  };
+const select = {
+  templateOf: {
+    templateBook: '#template-book',
+  },
+  containerOf: {
+    booksList: '.books-list',
+    bookImg: '.book__image',
+    filters: '.filters'
+  }
+};
 
-  const templates = {
-    templateBook: Handlebars.compile(document.querySelector(select.templateOf.templateBook).innerHTML),
-  };
+class BooksList {
+  constructor() {
+    this.initData();
+    this.render();
+    this.initActions();
+    this.hideBooks();
+    this.setBarColor();
+  }
 
-  const filters = [];
+  initData() {
+    this.data = dataSource.books;
+  }
 
-  function render() {
-    for (let book in dataSource.books) {
+  render() {
+
+    for (let book in this.data) {
 
       const HTMLData = {
-        name: dataSource.books[book].name,
-        price: dataSource.books[book].price,
-        rating: dataSource.books[book].rating,
-        image: dataSource.books[book].image,
-        id: dataSource.books[book].id,
-        ratingWidth: dataSource.books[book].rating * 10,
-        ratingBgc: barColor
+        name: this.data[book].name,
+        price: this.data[book].price,
+        rating: this.data[book].rating,
+        image: this.data[book].image,
+        id: this.data[book].id,
+        ratingWidth: this.data[book].rating * 10,
+        ratingBgc: this.setBarColor
 
+      };
+
+      const templates = {
+        templateBook: Handlebars.compile(document.querySelector(select.templateOf.templateBook).innerHTML),
       };
 
       const generatedHTML = templates.templateBook(HTMLData);
@@ -37,28 +47,17 @@
       const bookContainer = document.querySelector(select.containerOf.booksList);
       bookContainer.appendChild(book);
 
-      function barColor() {
-        if (dataSource.books[book].rating < 6) {
-          return 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)'
-        } else if (dataSource.books[book].rating > 6 && dataSource.books[book].rating <=8) {
-            return 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)'
-        } else if (dataSource.books[book].rating > 8 && dataSource.books[book].rating <= 9) {
-          return 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)'
-        } else if (dataSource.books[book].rating > 9) {
-          return 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)'
-        }
-      }
     }
   }
 
-  render();
+  initActions() {
 
-  function initActions() {
-
+    this.filters = [];
     let favoriteBooks = [];
+
     document.querySelector(select.containerOf.booksList).addEventListener('dblclick', function(e) {
       e.preventDefault();
-      console.log(e.target.offsetParent);
+      // console.log(e.target.offsetParent);
 
       if (!(favoriteBooks.includes(e.target.offsetParent.getAttribute('data-id'))) && e.target.offsetParent.classList.contains('book__image')) {
         favoriteBooks.push(e.target.offsetParent.getAttribute('data-id'));
@@ -75,47 +74,69 @@
     document.querySelector(select.containerOf.filters).addEventListener('click', function (e) {
       if (e.target.tagName == 'INPUT' && e.target.type == 'checkbox' && e.target.name == 'filter') {
         if (e.target.checked) {
-          filters.push(e.target.value);
-          console.log(filters);
+          this.filters.push(e.target.value);
+          // console.log(this.filters);
         }
         else if (!e.target.checked) {
-          const index = filters.indexOf(e.target.value);
-          filters.splice(index, 1);
+          const index = this.filters.indexOf(e.target.value);
+          this.filters.splice(index, 1);
         }
       }
-      hiddenBooks();
+      this.hideBooks();
     });
+
   }
 
-  function hiddenBooks() {
-    for (let book of dataSource.books) {
-      if (book.details.adults == true && filters.includes('adults')) {
+  hideBooks() {
+
+    for (let book of this.data) {
+      if (book.details.adults == true && this.filters.includes('adults')) {
         if (document.querySelector(select.containerOf.bookImg).getAttribute('data-id') == book.id) {
           document.querySelector(`[data-id="${book.id}"]`).classList.add('hidden');
         }
 
-      } else if (book.details.adults == true && !filters.includes('adults')) {
+      } else if (book.details.adults == true && !this.filters.includes('adults')) {
         document.querySelector(`[data-id="${book.id}"]`).classList.remove('hidden');
       }
 
       let arr = [];
 
-      if (book.details.nonFiction == true && filters.includes('nonFiction')) {
+      if (book.details.nonFiction == true && this.filters.includes('nonFiction')) {
         arr.push(book.id);
 
         for (let one of arr) {
           document.querySelector(`[data-id="${one}"]`).classList.add('hidden');
         }
-      } else if (book.details.nonFiction == true && !filters.includes('nonFiction')) {
+      } else if (book.details.nonFiction == true && !this.filters.includes('nonFiction')) {
         arr.push(book.id);
         for (let one of arr) {
           document.querySelector(`[data-id="${one}"]`).classList.remove('hidden');
         }
       }
     }
-
   }
-  initActions();
 
+  setBarColor() {
+
+    for (let book in this.data.books) {
+
+      if (this.data.books[book].rating < 6) {
+        return 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
+      } else if (this.dataSource.books[book].rating > 6 && this.dataSource.books[book].rating <= 8) {
+        return 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)';
+      } else if (this.dataSource.books[book].rating > 8 && this.dataSource.books[book].rating <= 9) {
+        return 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)';
+      } else if (this.dataSource.books[book].rating > 9) {
+        return 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
+      }
+
+    }
+  }
 }
+
+const app = new BooksList();
+
+
+
+
 
