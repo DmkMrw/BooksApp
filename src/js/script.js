@@ -36,7 +36,7 @@
           image: this.data[book].image,
           id: this.data[book].id,
           ratingWidth: this.data[book].rating * 10,
-          ratingBgc: this.setBarColor
+          ratingBgc: this.setBarColor ()
 
         };
 
@@ -48,6 +48,8 @@
         book = utils.createDOMFromHTML(generatedHTML);
         const bookContainer = document.querySelector(select.containerOf.booksList);
         bookContainer.appendChild(book);
+
+
 
       }
     }
@@ -73,9 +75,11 @@
 
       });
 
-      document.querySelector(select.containerOf.filters).addEventListener('click', function (e) {
+      document.querySelector(select.containerOf.filters).addEventListener('click', (e) => {
         if (e.target.tagName == 'INPUT' && e.target.type == 'checkbox' && e.target.name == 'filter') {
+          // console.log('this', this);
           if (e.target.checked) {
+            // console.log('this.filters', this.filters);
             this.filters.push(e.target.value);
           }
           else if (!e.target.checked) {
@@ -120,7 +124,7 @@
     setBarColor() {
 
       for (let book in this.data) {
-        // console.log('this.data', this.data);
+        console.log('this.data', this.data);
         console.log('book', this.data[book].rating);
         if (this.data[book].rating < 6) {
           return 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
@@ -135,7 +139,8 @@
       }
     }
   }
-    const app = new BooksList();
+  new BooksList();
+
 }
 
 
