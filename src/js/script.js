@@ -18,7 +18,6 @@
       this.render();
       this.initActions();
       this.hideBooks();
-      this.setBarColor();
     }
 
     initData() {
@@ -36,8 +35,7 @@
           image: this.data[book].image,
           id: this.data[book].id,
           ratingWidth: this.data[book].rating * 10,
-          ratingBgc: this.setBarColor ()
-
+          ratingBgc: this.setBarColor(this.data[book].rating)
         };
 
         const templates = {
@@ -121,21 +119,16 @@
       }
     }
 
-    setBarColor() {
+    setBarColor(rating) {
 
-      for (let book in this.data) {
-        console.log('this.data', this.data);
-        console.log('book', this.data[book].rating);
-        if (this.data[book].rating < 6) {
-          return 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
-        } else if (this.data[book].rating > 6 && this.data[book].rating <= 8) {
-          return 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)';
-        } else if (this.data[book].rating > 8 && this.data[book].rating <= 9) {
-          return 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)';
-        } else if (this.data[book].rating > 9) {
-          return 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
-        }
-
+      if (rating < 6) {
+        return 'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
+      } else if (rating > 6 && rating <= 8) {
+        return 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)';
+      } else if (rating > 8 && rating <= 9) {
+        return 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)';
+      } else if (rating > 9) {
+        return 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
       }
     }
   }
